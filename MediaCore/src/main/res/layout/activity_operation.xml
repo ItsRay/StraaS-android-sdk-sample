@@ -8,6 +8,15 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     tools:context="io.straas.android.media.demo.OperationActivity">
+
+
+    <Button
+        android:id="@+id/test"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/holo_blue_dark"/>
+
+
     <SurfaceView
         android:layout_width="0dp"
         android:layout_height="0dp"

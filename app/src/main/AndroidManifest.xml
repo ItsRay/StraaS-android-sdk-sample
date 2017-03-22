@@ -19,7 +19,8 @@
         <activity android:name="io.straas.android.media.demo.OperationActivity"
                   android:label="MediaCore - Operation"
                   android:screenOrientation="portrait"
-                  android:parentActivityName="io.straas.android.sdk.demo.StraasDemoActivity"/>
+                  android:parentActivityName="io.straas.android.sdk.demo.StraasDemoActivity"
+                  android:windowSoftInputMode="adjustResize"/>
 
         <activity android:name="io.straas.android.media.demo.StraasPlayerViewCustomizationActivity"
                   android:label="MediaCore - Player view customization"

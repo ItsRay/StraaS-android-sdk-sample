@@ -16,6 +16,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,8 +49,16 @@ public class OperationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operation);
-        AspectRatioFrameLayout mAspectRatioFrameLayout = (AspectRatioFrameLayout) findViewById(R.id.aspectRatioFrameLayout);
+        final AspectRatioFrameLayout mAspectRatioFrameLayout = (AspectRatioFrameLayout) findViewById(R.id.aspectRatioFrameLayout);
         mAspectRatioFrameLayout.setAspectRatio(1.778f);
+        mAspectRatioFrameLayout.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+                int w = mAspectRatioFrameLayout.getWidth();
+                int h = mAspectRatioFrameLayout.getHeight();
+                mAspectRatioFrameLayout.setLayoutParams(new LinearLayout.LayoutParams(w, h));
+            }
+        });
 
         StraasPlayerView playerView = (StraasPlayerView) findViewById(R.id.straas);
         playerView.initialize(this);
