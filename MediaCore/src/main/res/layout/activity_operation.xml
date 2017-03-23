@@ -9,28 +9,28 @@
     android:focusableInTouchMode="true"
     tools:context="io.straas.android.media.demo.OperationActivity">
 
-
-    <Button
-        android:id="@+id/test"
+    <EditText
+        android:background="@android:color/holo_green_light"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@android:color/holo_blue_dark"/>
-
+        android:layout_height="20dp"/>
 
     <SurfaceView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"/>
-    <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-        android:id="@+id/aspectRatioFrameLayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/black">
-        <io.straas.android.media.demo.widget.StraasPlayerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/straas"/>
-    </com.google.android.exoplayer2.ui.AspectRatioFrameLayout>
+        android:layout_height="1440px"
+        android:background="@android:color/darker_gray"
+        android:fillViewport="true">
+
+            <FrameLayout
+                android:id="@+id/video_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/black"/>
+
+    </ScrollView>
 
     <ScrollView
         android:layout_width="match_parent"

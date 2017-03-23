@@ -3,6 +3,7 @@ package io.straas.android.media.demo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaBrowserCompat.ConnectionCallback;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
@@ -16,7 +17,9 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,33 +52,66 @@ public class OperationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operation);
-        final AspectRatioFrameLayout mAspectRatioFrameLayout = (AspectRatioFrameLayout) findViewById(R.id.aspectRatioFrameLayout);
-        mAspectRatioFrameLayout.setAspectRatio(1.778f);
-        mAspectRatioFrameLayout.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
-            @Override
-            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-                int w = mAspectRatioFrameLayout.getWidth();
-                int h = mAspectRatioFrameLayout.getHeight();
-                mAspectRatioFrameLayout.setLayoutParams(new LinearLayout.LayoutParams(w, h));
-            }
-        });
-
-        StraasPlayerView playerView = (StraasPlayerView) findViewById(R.id.straas);
-        playerView.initialize(this);
+        mVideoContainer = (FrameLayout) findViewById(R.id.video_container);
 
         prepareEditText();
 
-        mStraasMediaCore = new StraasMediaCore(playerView, MemberIdentity.ME,
+        mStraasMediaCore = new StraasMediaCore(mUicontainer, MemberIdentity.ME,
                 new ConnectionCallback() {
                     @Override
                     public void onConnected() {
                         getMediaControllerCompat().registerCallback(mMediaControllerCallback);
+                        playUrlWithoutExtension(null);
+                        crop(null);
                     }
-                })
+                });
                 // remove setImaHelper if you don't want to include ad system (IMA)
-                .setImaHelper(ImaHelper.newInstance());
+                //.setImaHelper(ImaHelper.newInstance());
         getMediaBrowser().connect();
     }
+
+    private StraasMediaCore.UiContainer mUicontainer = new StraasMediaCore.UiContainer() {
+
+        @NonNull
+        @Override
+        public ViewGroup getVideoContainer() {
+            return mVideoContainer;
+        }
+
+        @Nullable
+        @Override
+        public ViewGroup getAdContainer() {
+            return null;
+        }
+
+        @Override
+        public void onUnbind(StraasMediaCore straasMediaCore) {
+            Log.d(TAG, "onUnbind");
+        }
+
+        @Override
+        public void onMediaBrowserConnected(StraasMediaCore straasMediaCore) {
+            if (straasMediaCore == null || straasMediaCore.getMediaController() == null) {
+                return;
+            }
+            MediaControllerCompat.setMediaController(OperationActivity.this, straasMediaCore.getMediaController());
+            if (straasMediaCore.getMediaController() != null) {
+                straasMediaCore.getMediaController().registerCallback(mMediaControllerCallback);
+            }
+        }
+
+        @Override
+        public void onMediaBrowserConnectionSuspended() {
+
+        }
+
+        @Override
+        public void onMediaBrowserConnectionFailed() {
+
+        }
+    };
+
+    private FrameLayout mVideoContainer;
 
     @Override
     protected void onStart() {
