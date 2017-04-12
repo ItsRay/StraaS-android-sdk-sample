@@ -1,5 +1,6 @@
 package io.straas.android.media.demo;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
@@ -29,12 +31,17 @@ import io.straas.android.sdk.demo.R;
 import io.straas.android.sdk.media.ImaHelper;
 import io.straas.android.sdk.media.StraasMediaCore;
 import io.straas.android.sdk.media.VideoCustomMetadata;
+import io.straas.android.sdk.media.notification.NotificationOptions;
 import io.straas.sdk.demo.MemberIdentity;
 
 /**
  * Demo for some of the operations to browse and play medias.
  */
 public class OperationActivity extends AppCompatActivity {
+
+    private static final String SHARE_PREFERENCE_KEY = "StraaS";
+    private static final String FOREGROUND_KEY = "foreground";
+
     // change these three attributes to fit with your CMS.
     private String PLAYLIST_ID = "";
     private String VIDEO_ID = "";
@@ -42,6 +49,7 @@ public class OperationActivity extends AppCompatActivity {
 
     private static final String TAG = OperationActivity.class.getSimpleName();
     private StraasMediaCore mStraasMediaCore;
+    private boolean mIsForeground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +68,20 @@ public class OperationActivity extends AppCompatActivity {
                     @Override
                     public void onConnected() {
                         getMediaControllerCompat().registerCallback(mMediaControllerCallback);
+                        //set foreground enable state when current state is not equal to setting
+                        if (mIsForeground != getMediaControllerCompat().getExtras().getBoolean(
+                                        StraasMediaCore.EXTRA_SERVICE_FOREGROUND_ENABLED)) {
+                            setForeground(mIsForeground);
+                        }
                     }
                 })
                 // remove setImaHelper if you don't want to include ad system (IMA)
                 .setImaHelper(ImaHelper.newInstance());
         getMediaBrowser().connect();
+
+        mIsForeground = getSharedPreferences(SHARE_PREFERENCE_KEY, Context.MODE_PRIVATE)
+                .getBoolean(FOREGROUND_KEY, false);
+        ((ToggleButton) findViewById(R.id.toggle_foreground)).setChecked(mIsForeground);
     }
 
     @Override
@@ -82,7 +99,7 @@ public class OperationActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (getMediaControllerCompat() != null) {
+        if (getMediaControllerCompat() != null && !mIsForeground) {
             if (isFinishing()) {
                 getMediaControllerCompat().unregisterCallback(mMediaControllerCallback);
                 getMediaControllerCompat().getTransportControls().stop();
@@ -95,7 +112,9 @@ public class OperationActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        getMediaBrowser().disconnect();
+        if (!mIsForeground) {
+            getMediaBrowser().disconnect();
+        }
     }
 
     private MediaBrowserCompat getMediaBrowser() {
@@ -219,9 +238,9 @@ public class OperationActivity extends AppCompatActivity {
                     // display info to user
                     MediaDescriptionCompat mediaDescription = item.getDescription();
                     Log.d(TAG, "ID: " + mediaDescription.getMediaId() + ", Title: " + mediaDescription.getTitle() +
-                    ", Description: " + mediaDescription.getDescription() + ", Thumbnail: " + mediaDescription.getIconUri() +
-                    ", Views: " + mediaDescription.getExtras().getLong(VideoCustomMetadata.PLAY_COUNT_SUM) +
-                    ", Duration: " + mediaDescription.getExtras().getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
+                            ", Description: " + mediaDescription.getDescription() + ", Thumbnail: " + mediaDescription.getIconUri() +
+                            ", Views: " + mediaDescription.getExtras().getLong(VideoCustomMetadata.PLAY_COUNT_SUM) +
+                            ", Duration: " + mediaDescription.getExtras().getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
                 } else if (item.isBrowsable()) {
                     getMediaBrowser().subscribe(VIDEO_ID, new MediaBrowserCompat.SubscriptionCallback() {
                         @Override
@@ -261,17 +280,35 @@ public class OperationActivity extends AppCompatActivity {
         mStraasMediaCore.setDisplayMode(StraasMediaCore.DISPLAY_MODE_CARDBOARD);
     }
 
+    public void toggleForeground(View toggleButton) {
+        mIsForeground = ((ToggleButton)toggleButton).isChecked();
+        getSharedPreferences(SHARE_PREFERENCE_KEY, Context.MODE_PRIVATE)
+                .edit().putBoolean(FOREGROUND_KEY, mIsForeground).apply();
+        setForeground(mIsForeground);
+    }
+
+    private void setForeground(boolean foreground) {
+        if (foreground) {
+            MediaControllerCompatHelper.startForeground(getMediaControllerCompat(),
+                    new NotificationOptions.Builder()
+                            .setTargetClassName(OperationActivity.class.getName())
+                            .build());
+        } else {
+            MediaControllerCompatHelper.stopForeground(getMediaControllerCompat());
+        }
+    }
+
     private final MediaControllerCompat.Callback mMediaControllerCallback = new MediaControllerCompat.Callback() {
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             Log.d(TAG, "ID: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID) +
-            ", Title: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE) +
-            ", Description: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION) +
-            ", Thumbnail: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI) +
-            ", Created at: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_DATE) +
-            ", Views: " + metadata.getBundle().getLong(VideoCustomMetadata.CUSTOM_METADATA_VIEWS_COUNT) +
-            ", Duration: " + metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
+                    ", Title: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE) +
+                    ", Description: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION) +
+                    ", Thumbnail: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI) +
+                    ", Created at: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_DATE) +
+                    ", Views: " + metadata.getBundle().getLong(VideoCustomMetadata.CUSTOM_METADATA_VIEWS_COUNT) +
+                    ", Duration: " + metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
         }
 
         @Override

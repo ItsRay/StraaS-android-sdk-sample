@@ -467,6 +467,10 @@ public final class StraasPlayerView extends FrameLayout implements StraasMediaCo
                         }
                         break;
                     case PlaybackStateCompat.STATE_NONE:
+                        switchToNone();
+                        if (getKeepScreenOn()) {
+                            setKeepScreenOn(false);
+                        }
                     case PlaybackStateCompat.STATE_STOPPED:
                         if (mIsLive) {
                             Bundle liveBundle = (mLiveBundle != null) ? mLiveBundle :
@@ -1315,6 +1319,12 @@ public final class StraasPlayerView extends FrameLayout implements StraasMediaCo
 
     private void switchToReplay() {
         mColumnReplay.setVisibility(VISIBLE);
+        mColumnPlay.setVisibility(INVISIBLE);
+        mColumnPause.setVisibility(INVISIBLE);
+    }
+
+    private void switchToNone() {
+        mColumnReplay.setVisibility(INVISIBLE);
         mColumnPlay.setVisibility(INVISIBLE);
         mColumnPause.setVisibility(INVISIBLE);
     }
