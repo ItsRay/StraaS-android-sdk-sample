@@ -1,10 +1,10 @@
 <resources>
 
     <style name="ChatroomTheme">
-        <item name="backgroundColor">@android:color/white</item>
-        <item name="msgAuthorColor">@android:color/black</item>
-        <item name="msgTextColor">#8b000000</item>
-        <item name="msgDividerColor">#EBEBEB</item>
+        <item name="backgroundColor">@android:color/transparent</item>
+        <item name="msgAuthorColor">#ff9e47</item>
+        <item name="msgTextColor">@android:color/white</item>
+        <item name="msgDividerColor">@android:color/transparent</item>
         <item name="msgRelativeTimeColor">#808080</item>
         <item name="textSize">14sp</item>
         <item name="bottomBarColor">#EFEFEF</item>
