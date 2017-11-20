@@ -1,6 +1,5 @@
 package io.straas.android.media.demo;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +16,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Checkable;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -56,6 +57,9 @@ public class OperationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_operation);
         AspectRatioFrameLayout mAspectRatioFrameLayout = findViewById(R.id.aspectRatioFrameLayout);
         mAspectRatioFrameLayout.setAspectRatio(1.778f);
@@ -76,14 +80,12 @@ public class OperationActivity extends AppCompatActivity {
                                 StraasMediaCore.EXTRA_SERVICE_FOREGROUND_IS_ENABLED, !mIsForeground)) {
                             setForeground(mIsForeground);
                         }
+                        getMediaControllerCompat().getTransportControls()
+                                .playFromMediaId("q5DQ4eAJ", null);
                     }
                 })
                 // remove setImaHelper if you don't want to include ad system (IMA)
                 .setImaHelper(ImaHelper.newInstance());
-
-        mIsForeground = getSharedPreferences(SHARE_PREFERENCE_KEY, Context.MODE_PRIVATE)
-                .getBoolean(FOREGROUND_KEY, false);
-        ((Checkable) findViewById(R.id.switch_foreground)).setChecked(mIsForeground);
     }
 
     @Override
@@ -280,19 +282,17 @@ public class OperationActivity extends AppCompatActivity {
         mStraasMediaCore.setPlaneProjectionMode(StraasMediaCore.PLANE_PROJECTION_MODE_FIT);
     }
 
-    public void normal(View view) {
-        mStraasMediaCore.setDisplayMode(StraasMediaCore.DISPLAY_MODE_NORMAL);
+    public void full(View view) {
+        mStraasMediaCore.setPlaneProjectionMode(StraasMediaCore.PLANE_PROJECTION_MODE_FULL);
     }
 
     public void cardboard(View view) {
         mStraasMediaCore.setDisplayMode(StraasMediaCore.DISPLAY_MODE_CARDBOARD);
     }
 
-    public void switchForeground(View toggleButton) {
-        mIsForeground = ((Switch)toggleButton).isChecked();
-        getSharedPreferences(SHARE_PREFERENCE_KEY, Context.MODE_PRIVATE)
-                .edit().putBoolean(FOREGROUND_KEY, mIsForeground).apply();
-        setForeground(mIsForeground);
+    public void switchPlayerSize(View toggleButton) {
+        View view = findViewById(R.id.control);
+        view.setVisibility(view.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
     }
 
     private void setForeground(boolean foreground) {

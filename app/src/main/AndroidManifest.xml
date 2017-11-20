@@ -20,6 +20,7 @@
                   android:label="MediaCore - Operation"
                   android:screenOrientation="portrait"
                   android:launchMode="singleTop"
+                  android:theme="@style/Theme.AppCompat.Light.NoActionBar"
                   android:parentActivityName="io.straas.android.sdk.demo.StraasDemoActivity"/>
 
         <activity android:name="io.straas.android.media.demo.StraasPlayerViewCustomizationActivity"
