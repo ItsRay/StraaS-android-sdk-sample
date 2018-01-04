@@ -28,7 +28,6 @@ import com.google.android.exoplayer2.C;
 import java.util.List;
 
 import io.straas.android.media.demo.widget.StraasPlayerView;
-import io.straas.android.media.demo.widget.ui.AspectRatioFrameLayout;
 import io.straas.android.sdk.demo.R;
 import io.straas.android.sdk.media.ImaHelper;
 import io.straas.android.sdk.media.StraasMediaCore;
@@ -61,8 +60,6 @@ public class OperationActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_operation);
-        AspectRatioFrameLayout mAspectRatioFrameLayout = findViewById(R.id.aspectRatioFrameLayout);
-        mAspectRatioFrameLayout.setAspectRatio(1.778f);
 
         StraasPlayerView playerView = findViewById(R.id.straas);
         playerView.initialize(this);
@@ -80,8 +77,8 @@ public class OperationActivity extends AppCompatActivity {
                                 StraasMediaCore.EXTRA_SERVICE_FOREGROUND_IS_ENABLED, !mIsForeground)) {
                             setForeground(mIsForeground);
                         }
-                        getMediaControllerCompat().getTransportControls()
-                                .playFromMediaId("q5DQ4eAJ", null);
+                        //getMediaControllerCompat().getTransportControls()
+                        //        .playFromMediaId("q5DQ4eAJ", null);
                     }
                 })
                 // remove setImaHelper if you don't want to include ad system (IMA)
