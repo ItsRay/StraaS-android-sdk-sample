@@ -98,6 +98,18 @@
                     android:id="@+id/low_latency_first"
                     android:text="LOW LATENCY FIRST"
                     android:checked="false" />
+                <TextView
+                    android:id="@+id/ccu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="CCU"/>
+                <TextView
+                    android:id="@+id/hit_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="HitCount"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout

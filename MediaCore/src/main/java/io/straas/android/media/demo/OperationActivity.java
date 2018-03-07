@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.exoplayer2.C;
 
 import java.util.List;
+import java.util.Locale;
 
 import io.straas.android.media.demo.widget.StraasPlayerView;
 import io.straas.android.media.demo.widget.ui.AspectRatioFrameLayout;
@@ -52,6 +53,8 @@ public class OperationActivity extends AppCompatActivity {
     private StraasMediaCore mStraasMediaCore;
     private Checkable mLowLatencyFirst, mDisableAudioSwitch;
     private boolean mIsForeground;
+    private TextView mCCUTextView;
+    private TextView mHitCountTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,9 @@ public class OperationActivity extends AppCompatActivity {
         mIsForeground = getSharedPreferences(SHARE_PREFERENCE_KEY, Context.MODE_PRIVATE)
                 .getBoolean(FOREGROUND_KEY, false);
         ((Checkable) findViewById(R.id.switch_foreground)).setChecked(mIsForeground);
+
+        mCCUTextView = findViewById(R.id.ccu);
+        mHitCountTextView = findViewById(R.id.hit_count);
     }
 
     @Override
@@ -347,10 +353,14 @@ public class OperationActivity extends AppCompatActivity {
                 case StraasMediaCore.LIVE_EXTRA_STATISTICS_CCU:
                     // you could also pull the value from getMediaControllerCompat().getExtras().getInt(LIVE_EXTRA_STATISTICS_CCU);
                     Log.d(TAG, "ccu: " + extras.getInt(event));
+                    mCCUTextView.setText(String.format(Locale.ENGLISH,
+                            "%s: %d", "CCU", extras.getInt(event)));
                     break;
                 case StraasMediaCore.LIVE_EXTRA_STATISTICS_HIT_COUNT:
                     // you could also pull the value from getMediaControllerCompat().getExtras().getInt(LIVE_EXTRA_STATISTICS_HIT_COUNT);
                     Log.d(TAG, "hit count: " + extras.getInt(event));
+                    mHitCountTextView.setText(String.format(Locale.ENGLISH,
+                            "%s: %d", "HitCount", extras.getInt(event)));
                     break;
             }
         }
