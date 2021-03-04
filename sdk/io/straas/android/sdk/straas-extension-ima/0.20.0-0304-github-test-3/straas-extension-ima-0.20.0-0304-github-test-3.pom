@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.straas.android.sdk</groupId>
+  <artifactId>straas-extension-ima</artifactId>
+  <version>0.20.0-0304-github-test-3</version>
+  <packaging>aar</packaging>
+  <name>straas-extension-ima</name>
+  <description>Straas Android SDK</description>
+  <organization>
+    <name>Straas.io</name>
+    <url>https://github.com/Straas/Straas-android-sdk-sample</url>
+  </organization>
+  <url>https://github.com/Straas/Straas-android-sdk-sample</url>
+  <scm>
+    <connection>scm:git:git@github.com/Straas/Straas-android-sdk-sample.git</connection>
+    <developerConnection>scm:git:git@github.com/Straas/Straas-android-sdk-sample.git</developerConnection>
+    <url>https://github.com/Straas/Straas-android-sdk-sample</url>
+    <tag>HEAD</tag>
+  </scm>
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.ads.interactivemedia.v3</groupId>
+      <artifactId>interactivemedia</artifactId>
+      <version>3.10.7</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.android.gms</groupId>
+      <artifactId>play-services-ads</artifactId>
+      <version>16.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>android-sdk</groupId>
+      <artifactId>straas-media-core</artifactId>
+      <version>unspecified</version>
+    </dependency>
+  </dependencies>
+</project>
